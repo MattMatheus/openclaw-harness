@@ -34,6 +34,7 @@ For operators and engineers:
 Core safety controls:
 
 - `contracts/openclaw-bootstrap/docs/nonce-lock.md`
+- `contracts/openclaw-bootstrap/docs/security-controls-pr-gate.md`
 - `contracts/openclaw-bootstrap/docs/invariants.md`
 - `contracts/openclaw-bootstrap/policies/`
 - `SECURITY.md`

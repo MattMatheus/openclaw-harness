@@ -27,6 +27,8 @@ contract:
     persistence: encrypted_harness_store_only
   interaction_lock:
     enabled: true
+    startup_nonce_disclosure_required: true
+    startup_disclosure_timing: before_stage_progression
     nonce:
       generation: harness_runtime_startup
       disclosure: once_at_startup_to_user

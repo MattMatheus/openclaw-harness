@@ -1,0 +1,55 @@
+name: Security Control Nonce Gate
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  nonce-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce maintainer nonce for security-control changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          SECURITY_REVIEW_NONCE: ${{ secrets.SECURITY_REVIEW_NONCE }}
+        run: |
+          set -euo pipefail
+
+          files_json="$(curl -fsSL \
+            -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \
+            -H \"Accept: application/vnd.github+json\" \
+            \"${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100\")"
+
+          changed_files="$(printf '%s' \"$files_json\" | jq -r '.[].filename')"
+          protected_pattern='^(AGENTS\.md|SECURITY\.md|contracts/openclaw-bootstrap/|scripts/check-docs-safety\.sh|scripts/check-control-invariants\.sh|scripts/check-security-downgrade\.sh|\.github/workflows/|\.github/CODEOWNERS)'
+
+          if ! printf '%s\n' "$changed_files" | rg -n "$protected_pattern" >/dev/null; then
+            echo "No protected control files changed; nonce gate not required."
+            exit 0
+          fi
+
+          if [[ -z "${SECURITY_REVIEW_NONCE:-}" ]]; then
+            echo "SECURITY_REVIEW_NONCE secret is not configured."
+            echo "Set a short-lived nonce secret before merging security-control PRs."
+            exit 1
+          fi
+
+          provided_nonce="$(printf '%s\n' "${PR_BODY:-}" | sed -n 's/^Security-Review-Nonce:[[:space:]]*//p' | head -n 1 | tr -d '\r')"
+
+          if [[ -z "$provided_nonce" ]]; then
+            echo "Missing PR body line: Security-Review-Nonce: <nonce>"
+            exit 1
+          fi
+
+          if [[ "$provided_nonce" != "$SECURITY_REVIEW_NONCE" ]]; then
+            echo "Invalid Security-Review-Nonce value."
+            exit 1
+          fi
+
+          echo "Nonce gate satisfied for protected control changes."
