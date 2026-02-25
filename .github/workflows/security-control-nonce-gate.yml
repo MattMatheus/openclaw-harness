@@ -28,12 +28,14 @@ jobs:
         run: |
           set -euo pipefail
 
-          files_json="$(curl -fsSL \
-            -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \
-            -H \"Accept: application/vnd.github+json\" \
-            \"${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100\")"
+          : "${GITHUB_API_URL:=https://api.github.com}"
 
-          changed_files="$(printf '%s' \"$files_json\" | jq -r '.[].filename')"
+          files_json="$(curl -fsSL \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files?per_page=100")"
+
+          changed_files="$(printf '%s' "$files_json" | jq -r '.[].filename')"
           protected_pattern='^(AGENTS\.md|SECURITY\.md|contracts/openclaw-bootstrap/|scripts/check-docs-safety\.sh|scripts/check-control-invariants\.sh|scripts/check-security-downgrade\.sh|\.github/workflows/|\.github/CODEOWNERS)'
 
           if ! printf '%s\n' "$changed_files" | rg -n "$protected_pattern" >/dev/null; then
