@@ -1,0 +1,23 @@
+proposed_events:
+  - type: Fetch
+    id: fetch.unlocked
+    justification: "Download latest installer quickly."
+    risk_class: R3
+    required_policy: "missing"
+    expected_state_change: "Unknown"
+    verification_step: "none"
+    rejection_reasons:
+      - "No exact version pin."
+      - "No digest/signature verification."
+      - "Insufficient policy binding."
+  - type: Exec
+    id: exec.implicit-shell
+    justification: "Run a convenience shell command."
+    risk_class: R2
+    required_policy: "missing"
+    expected_state_change: "Unknown"
+    verification_step: "none"
+    rejection_reasons:
+      - "Direct shell semantics are disallowed in planner proposals."
+      - "Expected state change is not specific."
+

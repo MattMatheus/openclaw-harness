@@ -1,0 +1,42 @@
+deny_patterns:
+  no_direct_shell_execution:
+    description: "Reject direct shell commands from planner context."
+    patterns:
+      - "(?i)\\b(sh|bash|zsh|fish|powershell|cmd)\\b"
+      - "(?i)\\bexec\\s*\\("
+  no_ambient_authority:
+    description: "Reject events that do not declare explicit scope/authority."
+    patterns:
+      - "(?i)authority\\s*:\\s*ambient"
+      - "(?i)scope\\s*:\\s*global\\*"
+  no_secret_material:
+    description: "Reject raw secrets in prompts/logs/artifacts."
+    patterns:
+      - "(?i)api[_-]?key\\s*[:=]\\s*[^\\s]+"
+      - "(?i)token\\s*[:=]\\s*[^\\s]+"
+      - "(?i)secret\\s*[:=]\\s*[^\\s]+"
+      - "(?i)password\\s*[:=]\\s*[^\\s]+"
+      - "-----BEGIN (RSA|EC|OPENSSH|PRIVATE) KEY-----"
+  no_nonce_persistence:
+    description: "Reject writes/logging that persist runtime nonce."
+    patterns:
+      - "(?i)nonce\\s*[:=]\\s*[A-Za-z0-9_-]{12,128}"
+      - "(?i)write(file|log).*(nonce)"
+  no_unverified_download:
+    description: "Reject fetch proposals lacking pin and digest/signature."
+    patterns:
+      - "(?i)fetch(?!.*version)"
+      - "(?i)fetch(?!.*digest|.*signature)"
+      - "(?i)curl\\s+.*\\|\\s*(sh|bash|zsh)"
+  no_unapproved_privilege:
+    description: "Reject privileged actions missing explicit Elevate event approval."
+    patterns:
+      - "(?i)sudo\\b(?!.*approved_elevate_event)"
+      - "(?i)systemctl\\s+(enable|start)(?!.*approved_elevate_event)"
+  no_vendor_or_personal_disclosure:
+    description: "Reject output that discloses prohibited vendor/personal references."
+    patterns:
+      - "(?i)owner\\s*:\\s*[a-z]+"
+      - "(?i)/Users/[A-Za-z0-9._-]+"
+      - "(?i)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+      - "(?i)https?://[^\\s]*legacy[^\\s]*"

@@ -1,0 +1,23 @@
+proposed_events:
+  - type: ProbeHost
+    id: probe.os
+    justification: "Determine OS to select supported install path."
+    risk_class: R0
+    required_policy: "policies/risk_tiers.yaml#R0"
+    expected_state_change: "None"
+    verification_step: "Confirm OS fact from harness probe output."
+  - type: Fetch
+    id: fetch.openclaw
+    justification: "Acquire pinned OpenClaw artifact for install stage."
+    risk_class: R3
+    required_policy: "manifests/version-lock.yaml + policies/escalation_rules.yaml"
+    expected_state_change: "Pinned artifact materialized in controlled fetch cache."
+    verification_step: "Validate digest/signature before install eligibility."
+  - type: Elevate
+    id: elevate.install
+    justification: "Authorize privileged mutation for approved install action."
+    risk_class: R4
+    required_policy: "policies/escalation_rules.yaml#privilege_requirements"
+    expected_state_change: "Temporary elevated permission scope granted."
+    verification_step: "Confirm explicit approval record exists before privileged event dispatch."
+

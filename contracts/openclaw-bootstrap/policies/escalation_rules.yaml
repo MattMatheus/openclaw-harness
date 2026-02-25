@@ -1,0 +1,54 @@
+escalation_rules:
+  global:
+    require_typed_event: true
+    require_justification: true
+    require_expected_state_change: true
+    require_verification_step: true
+    prohibit_unscoped_exec: true
+    enforce_nonce_lock: true
+    enforce_qa_only_on_stop: true
+  stage_gates:
+    - stage: plan
+      transition_to: fetch
+      approval: human
+      reason: "Interactive contract requires explicit approval after planning."
+    - stage: verify
+      transition_to: harden
+      approval: human
+      reason: "Hardening applies security controls and needs explicit confirmation."
+  risk_gates:
+    - risk_class: R3
+      approval: supervisor
+      when: before_dispatch
+      reason: "Executable/artifact fetch must be supervised."
+    - risk_class: R4
+      approval: human
+      when: before_dispatch
+      reason: "Privilege and persistence changes require direct human consent."
+  privilege_requirements:
+    - action: any_privileged_mutation
+      required_event: Elevate
+      deny_without_event: true
+  idempotency:
+    - stage: install
+      required_checks:
+        - desired_state_marker_present_or_noop
+        - target_version_equals_lock
+        - config_hash_equals_expected
+  interaction_lock:
+    startup:
+      - requirement: generate_nonce_runtime_only
+      - requirement: disclose_nonce_to_user
+      - requirement: never_persist_nonce
+    stop:
+      commands:
+        - "STOP WORK"
+        - "STOP ALL WORK"
+        - "STOP OPENCLAW"
+      required_state_after_match: locked_qa_only
+    resume:
+      command_format: "RESUME WORK: <nonce>"
+      on_valid_nonce: unlock_and_resume_contract
+      on_invalid_nonce:
+        action: hard_reject
+        user_redirect: "See docs/nonce-lock.md"

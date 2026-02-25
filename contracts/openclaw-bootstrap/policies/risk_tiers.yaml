@@ -1,0 +1,33 @@
+risk_tiers:
+  R0:
+    name: read_only_inspection
+    description: "Read-only discovery and verification with no state mutation."
+    approval: none
+  R1:
+    name: user_space_writes
+    description: "User-scope file writes and non-privileged local state updates."
+    approval: policy_auto_if_allowlisted
+  R2:
+    name: package_install
+    description: "Package installation or mutation without elevated privilege."
+    approval: human_or_supervisor_per_escalation_rules
+  R3:
+    name: executable_fetch
+    description: "External executable or package artifact acquisition."
+    approval: supervisor_required
+  R4:
+    name: privileged_or_persistent_changes
+    description: "Privilege elevation, service persistence, firewall/network exposure changes."
+    approval: human_required
+
+event_type_defaults:
+  ProbeHost: R0
+  WriteFile: R1
+  Exec: R2
+  Fetch: R3
+  Verify: R0
+  Report: R0
+  ServiceChange: R4
+  PortBind: R4
+  Elevate: R4
+

@@ -1,0 +1,26 @@
+disclosure_controls:
+  objective: "Prevent vendor- and person-specific disclosure in harness outputs."
+  scope:
+    include_paths:
+      - "contracts/openclaw-bootstrap/**"
+    exclude_paths:
+      - "legacy-seed-input/**"
+  prohibited_references:
+    vendors:
+      - "legacy_vendor_brand_names"
+      - "legacy_vendor_domains"
+    personal_identifiers:
+      - "real_person_name_fields"
+      - "home_directory_user_paths"
+      - "direct_contact_identifiers"
+  enforcement:
+    mode: hard_fail
+    on_violation:
+      - reject_artifact
+      - emit_report_event
+      - require_sanitization_fix
+  required_redaction_labels:
+    - "[REDACTED:PERSON]"
+    - "[REDACTED:ORG]"
+    - "[REDACTED:PATH]"
+    - "[REDACTED:CONTACT]"

@@ -1,0 +1,15 @@
+images:
+  note: "Optional installation path support. Any image usage requires exact digest."
+  entries:
+    - name: "node"
+      tag: "22-bookworm"
+      digest: "sha256:REQUIRED_BEFORE_USE"
+      purpose: "containerized bootstrap runtime"
+    - name: "alpine"
+      tag: "3.21"
+      digest: "sha256:REQUIRED_BEFORE_USE"
+      purpose: "minimal verification helper image"
+policy:
+  require_digest_for_pull: true
+  forbid_tag_only_resolution: true
+

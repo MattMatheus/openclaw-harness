@@ -1,0 +1,35 @@
+contract:
+  id: stage-exit-gates
+  source: "AthenaWork stage exit gates (sanitized)"
+  gates:
+    planning:
+      required:
+        - "Intake captured with required metadata."
+        - "Next stage recommendation explicit."
+    architect:
+      required:
+        - "Scope and downstream mapping explicit."
+        - "Transition target explicit."
+    engineering:
+      required:
+        - "Acceptance criteria implemented."
+        - "Tests updated and passing."
+        - "Handoff package created."
+    qa:
+      required:
+        - "Acceptance evidence explicit."
+        - "Regression statement explicit."
+        - "Transition explicit: qa->done or qa->active."
+    verify:
+      required:
+        - "Version/integrity checks complete."
+        - "Runtime exposure checks complete."
+    harden:
+      required:
+        - "Human confirmation captured."
+        - "Post-harden verification complete."
+    cycle_close:
+      required:
+        - "Observer report exists."
+        - "Cycle sync checklist complete."
+

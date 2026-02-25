@@ -1,0 +1,211 @@
+contract:
+  id: openclaw-bootstrap
+  title: Interactive Staged Harness Contract for Bootstrapping OpenClaw
+  version: 1.0.0
+  capsule_path: contracts/openclaw-bootstrap
+  seeded_from: "AthenaWork (historical source, not distributed in this repository)"
+  seed_material:
+    - "Program control plane pattern"
+    - "Stage exit gates pattern"
+    - "Unified metadata contract pattern"
+    - "Content rejection policy pattern"
+    - "Task template pattern"
+    - "Claim template pattern"
+  sanitization_constraints:
+    remove_vendor_specific_references: true
+    prohibit_personal_disclosure: true
+    immutable_seed_directory: "N/A (source removed after sanitization)"
+  mode: interactive
+  start_stage: probe
+  planner_role: llm_planner_only
+  executor_role: harness_only
+  side_effects: event_externalized_only
+  ambient_authority: denied
+  secret_material_policy:
+    visible_to_agent: false
+    logging: redacted_only
+    persistence: encrypted_harness_store_only
+  interaction_lock:
+    enabled: true
+    nonce:
+      generation: harness_runtime_startup
+      disclosure: once_at_startup_to_user
+      storage: memory_only
+      persistence: forbidden
+    stop_commands:
+      - "STOP WORK"
+      - "STOP ALL WORK"
+      - "STOP OPENCLAW"
+    resume_command_regex: "^RESUME WORK:\\s+([A-Za-z0-9_-]{12,128})$"
+    stop_mode:
+      name: qa_only_mode
+      denies:
+        - command_execution
+        - skills_execution
+        - mcp_tool_execution
+        - workflow_stage_progression
+      allows:
+        - question_answer_responses
+    invalid_nonce_behavior:
+      action: force_reject
+      redirect_doc: docs/nonce-lock.md
+
+stage_dag:
+  probe:
+    next: [plan]
+  plan:
+    next: [fetch]
+    gate: human_approval_required
+  fetch:
+    next: [install]
+    gate: supervisor_approval_required_for_r3_plus
+  install:
+    next: [verify]
+  verify:
+    next: [harden]
+    gate: human_confirmation_required
+  harden:
+    next: [report]
+  report:
+    next: []
+
+allowed_transitions:
+  - from: probe
+    to: plan
+  - from: plan
+    to: fetch
+  - from: fetch
+    to: install
+  - from: install
+    to: verify
+  - from: verify
+    to: harden
+  - from: harden
+    to: report
+
+risk_policy_bindings:
+  tiers_file: policies/risk_tiers.yaml
+  escalation_file: policies/escalation_rules.yaml
+  deny_patterns_file: policies/deny_patterns.yaml
+  disclosure_controls_file: policies/disclosure_controls.yaml
+  security_baseline_file: policies/security_baseline.yaml
+  rules:
+    - rule: no_direct_shell_execution
+      enforce_via: deny_patterns
+    - rule: no_ambient_authority
+      enforce_via: mandatory_event_scopes
+    - rule: no_secrets_in_context
+      enforce_via: secret_redaction_and_reference_tokens
+    - rule: external_download_requires_pin_and_digest
+      enforce_via: manifests/version-lock.yaml
+    - rule: privilege_change_requires_elevate_event
+      enforce_via: escalation_rules
+    - rule: idempotent_install_only
+      enforce_via: state_markers_and_verify_checks
+    - rule: no_health_catalyst_or_personal_detail_disclosure
+      enforce_via: disclosure_controls
+
+required_host_fact_probes:
+  - id: hf-os
+    fact: host_operating_system
+    event_type: ProbeHost
+    required: true
+  - id: hf-pkgmgr
+    fact: package_manager_capabilities
+    event_type: ProbeHost
+    required: true
+  - id: hf-container
+    fact: container_runtime_presence
+    event_type: ProbeHost
+    required: true
+  - id: hf-privilege
+    fact: privilege_model_and_elevation_path
+    event_type: ProbeHost
+    required: true
+  - id: hf-network
+    fact: network_constraints_and_egress_policy
+    event_type: ProbeHost
+    required: true
+
+event_types:
+  - type: ProbeHost
+    default_risk_class: R0
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: Exec
+    default_risk_class: R2
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: Fetch
+    default_risk_class: R3
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: WriteFile
+    default_risk_class: R1
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: ServiceChange
+    default_risk_class: R4
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: PortBind
+    default_risk_class: R4
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: Elevate
+    default_risk_class: R4
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: Verify
+    default_risk_class: R0
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+  - type: Report
+    default_risk_class: R0
+    required_fields:
+      - justification
+      - risk_class
+      - required_policy
+      - expected_state_change
+      - verification_step
+
+termination_criteria:
+  - openclaw_installed
+  - installation_verified
+  - runtime_hardened_no_exposed_ports_no_ambient_secrets
+  - full_event_log_replayable
+  - artifacts_persisted_to_durable_storage
+  - nonce_lock_policy_enforced
+  - seeded_output_sanitized

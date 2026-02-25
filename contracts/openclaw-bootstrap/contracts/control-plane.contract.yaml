@@ -1,0 +1,22 @@
+contract:
+  id: control-plane
+  purpose: "Seeded from AthenaWork program control plane for mediated OpenClaw bootstrap."
+  planes:
+    delivery_plane:
+      lifecycle: [planning, architect, engineering, qa, pm, cycle-close]
+      rules:
+        - "No silent stage transitions."
+        - "No stage skip."
+        - "Each transition records rationale and evidence."
+    knowledge_plane:
+      lifecycle: [idea, candidate, active-test, supported, falsified, parked]
+      rules:
+        - "candidate -> active-test requires test plan."
+        - "active-test -> supported|falsified requires artifact linkage."
+  handoff_rules:
+    - "Delivery behavior changes should reference related claims/artifacts."
+    - "Claim promotions should reference related delivery work when applicable."
+  human_gateways:
+    - "High-impact promotion requires human approval."
+    - "All R3+ and R4 actions follow escalation policy."
+

@@ -1,0 +1,26 @@
+lock:
+  generated_at: "2026-02-25T00:00:00Z"
+  target:
+    name: openclaw
+    source: npm
+    package: openclaw
+    version: "2026.2.25"
+    artifact: "openclaw-2026.2.25.tgz"
+    digest:
+      algorithm: sha512
+      value: "REQUIRED_BEFORE_FETCH"
+    signature:
+      type: "registry-signature-or-attestation"
+      value: "REQUIRED_IF_AVAILABLE"
+  runtime_dependencies:
+    - name: node
+      version_constraint: ">=22.0.0"
+      lock_mode: "environment-fact-verified"
+    - name: npm
+      version_constraint: ">=10.0.0"
+      lock_mode: "environment-fact-verified"
+  fetch_policy:
+    require_exact_version: true
+    require_digest_or_signature: true
+    reject_unlocked_artifacts: true
+

@@ -1,0 +1,25 @@
+security_baseline:
+  identity_and_access:
+    - "No ambient authority."
+    - "Least-privilege event scopes required."
+    - "Privileged mutations require approved Elevate event."
+  secret_management:
+    - "No raw secrets in prompts/logs/artifacts."
+    - "Secrets referenced by handles only."
+    - "Nonce is memory-only and never persisted."
+  software_supply_chain:
+    - "Pinned versions required for all fetches."
+    - "Digest/signature verification required."
+    - "Unverified artifact execution forbidden."
+  runtime_hardening:
+    - "Loopback-only bind by default."
+    - "Service persistence requires explicit approval."
+    - "Unexpected open ports trigger verify failure."
+  observability_and_audit:
+    - "Every side effect represented as typed event."
+    - "Every event includes verification step."
+    - "Replay artifacts required for completion."
+  disclosure_controls:
+    - "No vendor-specific references in generated harness outputs."
+    - "No personal identifier leakage in generated harness outputs."
+

@@ -1,0 +1,37 @@
+contract:
+  id: content-safety
+  source: "AthenaWork content rejection policy (sanitized)"
+  outcomes: [ALLOW, REDACT_AND_ALLOW, QUARANTINE, BLOCK]
+  decision_contract_required: true
+  decision_fields:
+    - policy_version
+    - decision
+    - severity
+    - categories
+    - signals
+    - actions
+    - reason
+    - timestamp_utc
+    - agent_id
+  categories:
+    - credential
+    - personal_identifier
+    - financial
+    - health
+    - private_restricted
+  action_rules:
+    BLOCK:
+      - "Confirmed high-risk personal identifiers."
+      - "Raw private keys or active tokens."
+    QUARANTINE:
+      - "High-confidence sensitive material with unclear intent."
+    REDACT_AND_ALLOW:
+      - "Moderate-confidence sensitive spans in non-critical context."
+    ALLOW:
+      - "No material sensitive findings."
+  non_negotiable:
+    - "Never store raw secrets."
+    - "Never auto-downgrade BLOCK to ALLOW."
+    - "Never ingest without explicit decision."
+  redaction_format: "[REDACTED:<category>:<hash8>]"
+
