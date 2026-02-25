@@ -30,6 +30,7 @@ runtime_constraints:
   personal_disclosure_forbidden: true
   unpinned_or_unverified_fetch_forbidden: true
   stop_resume_lock_enforced: true
+  startup_nonce_disclosure_required: true
 ```
 
 ## Stage Contract
@@ -98,6 +99,10 @@ variant_map:
 
 ```yaml
 lock_contract:
+  startup_nonce_disclosure:
+    required: true
+    timing: runtime_startup_before_stage_progression
+    persistence: forbidden
   stop_commands:
     - STOP WORK
     - STOP ALL WORK
@@ -116,6 +121,7 @@ intent: event_proposal
 decision: proceed
 reasons:
   - "Initial host fact discovery required."
+  - "Startup nonce disclosure must be completed before any stage progression."
 events:
   - type: ProbeHost
     id: probe.os

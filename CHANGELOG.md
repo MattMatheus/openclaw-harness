@@ -20,9 +20,12 @@
   - `SECURITY.md`
 - Operator decision tree:
   - `contracts/openclaw-bootstrap/docs/operator-decision-tree.md`
+- Security-control PR nonce gate documentation:
+  - `contracts/openclaw-bootstrap/docs/security-controls-pr-gate.md`
 
 ### Changed
 
 - Repository docs polished for GitHub readiness.
 - Naming shifted to user-facing "OpenClaw Harness" language.
-
+- Enforced startup nonce disclosure as a required precondition before any stage progression in lock contract definitions.
+- Added guardrail automation via CODEOWNERS, CI invariant checks, anti-downgrade checks, and a maintainer-only PR nonce gate scaffold.

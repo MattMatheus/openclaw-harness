@@ -1,0 +1,12 @@
+# Default owner for repository content.
+* @MattMatheus
+
+# Security-critical harness controls.
+/AGENTS.md @MattMatheus
+/SECURITY.md @MattMatheus
+/contracts/openclaw-bootstrap/** @MattMatheus
+/scripts/check-docs-safety.sh @MattMatheus
+/scripts/check-control-invariants.sh @MattMatheus
+/scripts/check-security-downgrade.sh @MattMatheus
+/.github/CODEOWNERS @MattMatheus
+/.github/workflows/** @MattMatheus
