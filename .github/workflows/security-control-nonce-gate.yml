@@ -50,7 +50,7 @@ jobs:
           fi
 
           provided_nonce="$(printf '%s\n' "${PR_BODY:-}" \
-            | sed -n 's/^Security-Review-Nonce:[[:space:]]*//p' \
+            | sed -n 's/^[[:space:]]*Security-Review-Nonce:[[:space:]]*//p' \
             | tr -d '\r' \
             | rg -v '^\s*<.*>\s*$' \
             | tail -n 1)"
