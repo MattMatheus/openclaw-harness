@@ -21,6 +21,7 @@ echo "Running control invariant checks..."
 
 require_pattern "contracts/openclaw-bootstrap/contract.yaml" "startup_nonce_disclosure_required:\\s*true" "startup nonce disclosure must be required"
 require_pattern "contracts/openclaw-bootstrap/contract.yaml" "startup_disclosure_timing:\\s*before_stage_progression" "startup disclosure must happen before stage progression"
+require_pattern "contracts/openclaw-bootstrap/contract.yaml" "security_control_changes_require_nonce_gate:\\s*true" "security control changes must require nonce gate"
 require_pattern "contracts/openclaw-bootstrap/contract.yaml" "generation:\\s*harness_runtime_startup" "nonce must be generated at runtime startup"
 require_pattern "contracts/openclaw-bootstrap/contract.yaml" "storage:\\s*memory_only" "nonce must remain memory-only"
 require_pattern "contracts/openclaw-bootstrap/contract.yaml" "persistence:\\s*forbidden" "nonce persistence must be forbidden"
@@ -33,9 +34,13 @@ require_pattern "AGENTS.md" "direct_execution_forbidden:\\s*true" "direct execut
 require_pattern "AGENTS.md" "typed_events_required:\\s*true" "typed events must remain required"
 require_pattern "AGENTS.md" "stop_resume_lock_enforced:\\s*true" "stop/resume lock must remain enforced"
 require_pattern "AGENTS.md" "startup_nonce_disclosure_required:\\s*true" "startup nonce disclosure must remain required"
+require_pattern "AGENTS.md" "security_control_changes_require_nonce_gate:\\s*true" "security control changes must require nonce gate"
+require_pattern "AGENTS.md" "security_control_relaxation_forbidden:\\s*true" "security control relaxation must remain forbidden"
 require_pattern "AGENTS.md" "timing:\\s*runtime_startup_before_stage_progression" "startup nonce disclosure timing must remain pre-stage"
 require_pattern "AGENTS.md" "resume_command:\\s*\"RESUME WORK: <nonce>\"" "resume command contract must remain explicit"
 require_pattern "AGENTS.md" "No variant may bypass nonce lock\." "variant invariant must block nonce lock bypass"
+require_pattern "AGENTS.md" "pr_nonce_gate_required" "security change contract must require nonce gate"
+require_pattern "AGENTS.md" "deny_approval_gate_weakening:\\s*true" "approval gate weakening must remain denied"
 
 if [[ "$fail" -ne 0 ]]; then
   echo "Control invariant checks failed."

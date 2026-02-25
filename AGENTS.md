@@ -31,6 +31,8 @@ runtime_constraints:
   unpinned_or_unverified_fetch_forbidden: true
   stop_resume_lock_enforced: true
   startup_nonce_disclosure_required: true
+  security_control_changes_require_nonce_gate: true
+  security_control_relaxation_forbidden: true
 ```
 
 ## Stage Contract
@@ -111,6 +113,28 @@ lock_contract:
   invalid_nonce_behavior:
     mode: qa_only_locked
     redirect_doc: contracts/openclaw-bootstrap/docs/nonce-lock.md
+```
+
+## Security Change Contract
+
+```yaml
+security_change_contract:
+  protected_paths:
+    - AGENTS.md
+    - SECURITY.md
+    - contracts/openclaw-bootstrap/**
+    - scripts/check-control-invariants.sh
+    - scripts/check-security-downgrade.sh
+    - .github/CODEOWNERS
+    - .github/workflows/**
+  required_controls:
+    - codeowners_review_required
+    - required_checks_must_pass
+    - pr_nonce_gate_required
+  relaxation_policy:
+    deny_approval_gate_weakening: true
+    deny_lock_disable: true
+    deny_runtime_constraint_disable: true
 ```
 
 ## Startup Output Template (First Agent Response)

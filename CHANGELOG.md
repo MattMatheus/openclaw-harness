@@ -29,3 +29,4 @@
 - Naming shifted to user-facing "OpenClaw Harness" language.
 - Enforced startup nonce disclosure as a required precondition before any stage progression in lock contract definitions.
 - Added guardrail automation via CODEOWNERS, CI invariant checks, anti-downgrade checks, and a maintainer-only PR nonce gate scaffold.
+- Tightened agent-side security-change contract and made nonce-gated security controls explicit invariants.
