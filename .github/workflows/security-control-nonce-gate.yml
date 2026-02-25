@@ -12,6 +12,11 @@ jobs:
   nonce-gate:
     runs-on: ubuntu-latest
     steps:
+      - name: Install nonce gate dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep jq
+
       - name: Enforce maintainer nonce for security-control changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
