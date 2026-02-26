@@ -25,6 +25,8 @@ forbid_pattern "AGENTS.md" "direct_execution_forbidden:\\s*false" "direct execut
 forbid_pattern "AGENTS.md" "typed_events_required:\\s*false" "typed event requirement cannot be disabled"
 forbid_pattern "AGENTS.md" "stop_resume_lock_enforced:\\s*false" "stop/resume lock cannot be disabled"
 forbid_pattern "AGENTS.md" "startup_nonce_disclosure_required:\\s*false" "startup nonce disclosure cannot be disabled"
+forbid_pattern "AGENTS.md" "security_control_changes_require_nonce_gate:\\s*false" "nonce gate requirement cannot be disabled"
+forbid_pattern "AGENTS.md" "security_control_relaxation_forbidden:\\s*false" "security relaxation prohibition cannot be disabled"
 forbid_pattern "AGENTS.md" "stage_skip_allowed:\\s*true" "stage skipping cannot be enabled"
 forbid_pattern "AGENTS.md" "probe_start_required:\\s*false" "probe start requirement cannot be disabled"
 forbid_pattern "AGENTS.md" "plan_to_fetch:\\s*(none|not_required|optional)" "plan->fetch approval cannot be downgraded"
@@ -36,6 +38,7 @@ forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "ambient_authority:\
 forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "side_effects:\\s*(inline|direct|unbounded)" "side effects must stay event externalized"
 forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "startup_nonce_disclosure_required:\\s*false" "startup nonce disclosure cannot be disabled"
 forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "startup_disclosure_timing:\\s*(after_stage_progression|optional|none)" "startup nonce timing cannot be relaxed"
+forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "security_control_changes_require_nonce_gate:\\s*false" "security control nonce gate cannot be disabled"
 forbid_pattern "contracts/openclaw-bootstrap/contract.yaml" "enabled:\\s*false" "interaction lock cannot be disabled"
 
 control_pattern='^(AGENTS\.md|contracts/openclaw-bootstrap/contract\.yaml|contracts/openclaw-bootstrap/policies/|scripts/check-control-invariants\.sh|scripts/check-security-downgrade\.sh|\.github/workflows/|\.github/CODEOWNERS)'
